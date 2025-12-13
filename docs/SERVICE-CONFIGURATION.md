@@ -33,7 +33,7 @@ Complete guide for configuring all services in the media library management stac
 ### Application Configuration
 | Service | Status | Notes |
 |---------|--------|-------|
-| qBittorrent | ✅ Done | Password changed, categories set (sonarr, radarr) |
+| qBittorrent | ✅ Done | Password changed, VueTorrent UI enabled, categories set |
 | Sonarr | ✅ Done | Root folder /media/tv, download client configured |
 | Radarr | ✅ Done | Root folder /media/movies, download client configured |
 | Prowlarr | ✅ Done | Indexers added, linked to Sonarr/Radarr |
@@ -74,7 +74,7 @@ Complete guide for configuring all services in the media library management stac
 
 ### 1. qBittorrent
 
-**URL**: https://qbit.moosenas.cc
+**URL**: https://qbit.yourdomain.com
 
 **Default Credentials**: `admin` / `adminadmin`
 
@@ -84,16 +84,24 @@ Complete guide for configuring all services in the media library management stac
    - Tools → Options → Web UI
    - Change password
    - Uncheck "Bypass authentication for clients on localhost"
-3. **Configure download paths**:
+3. **Enable VueTorrent UI** (recommended):
+   - Tools → Options → Web UI
+   - Check **"Use alternative Web UI"**
+   - Path: `/vuetorrent`
+   - Save
+
+   VueTorrent is a modern, mobile-friendly interface that's pre-installed via Docker Mod. The default qBittorrent UI is functional but has tiny buttons and doesn't work well on phones. VueTorrent provides responsive design, touch-friendly controls, dark mode, and PWA support (install as app on your phone).
+
+4. **Configure download paths**:
    - Tools → Options → Downloads
    - Default Save Path: `/downloads`
-4. **Create categories** (used by Sonarr/Radarr):
+5. **Create categories** (used by Sonarr/Radarr):
    - Right-click in left panel → Add Category
    - Name: `sonarr`, Save path: `/downloads/sonarr`
    - Name: `radarr`, Save path: `/downloads/radarr`
    - **Important**: Both Name AND Save path must be set
    - **Note**: qBittorrent doesn't allow renaming categories - delete and recreate if needed
-5. **Optional - Connection settings**:
+6. **Optional - Connection settings**:
    - Tools → Options → Connection
    - Disable UPnP (doesn't work behind VPN)
 
@@ -103,7 +111,7 @@ Complete guide for configuring all services in the media library management stac
 
 ### 2. Sonarr (TV Shows)
 
-**URL**: https://sonarr.moosenas.cc
+**URL**: https://sonarr.yourdomain.com
 
 #### Steps:
 1. Login (you set the password during auth setup)
@@ -135,7 +143,7 @@ Complete guide for configuring all services in the media library management stac
 
 ### 3. Radarr (Movies)
 
-**URL**: https://radarr.moosenas.cc
+**URL**: https://radarr.yourdomain.com
 
 #### Steps:
 1. Login
@@ -162,7 +170,7 @@ Complete guide for configuring all services in the media library management stac
 
 ### 4. Prowlarr (Indexers)
 
-**URL**: https://prowlarr.moosenas.cc
+**URL**: https://prowlarr.yourdomain.com
 
 #### Steps:
 1. Login
@@ -199,7 +207,7 @@ Complete guide for configuring all services in the media library management stac
 
 ### 5. Jellyfin (Media Server)
 
-**URL**: https://jellyfin.moosenas.cc
+**URL**: https://jellyfin.yourdomain.com
 
 #### Steps:
 1. If first time: Complete setup wizard
@@ -223,7 +231,7 @@ Complete guide for configuring all services in the media library management stac
 
 ### 6. Jellyseerr (Requests)
 
-**URL**: https://jellyseerr.moosenas.cc
+**URL**: https://jellyseerr.yourdomain.com
 
 #### Steps:
 1. First visit shows setup wizard
@@ -261,7 +269,7 @@ Complete guide for configuring all services in the media library management stac
 
 ### 7. Bazarr (Subtitles)
 
-**URL**: https://bazarr.moosenas.cc
+**URL**: https://bazarr.yourdomain.com
 
 #### Steps:
 1. Login (you configured auth earlier)
@@ -301,7 +309,7 @@ Complete guide for configuring all services in the media library management stac
 
 ### 7. Uptime Kuma (Monitoring)
 
-**URL**: https://uptime.moosenas.cc
+**URL**: https://uptime.yourdomain.com
 
 #### Step 1: Setup Docker Host (required for Docker monitors)
 
@@ -400,7 +408,7 @@ For each:
 
 ### 8. Pi-hole (Optional)
 
-**URL**: https://pihole.moosenas.cc/admin
+**URL**: https://pihole.yourdomain.com/admin
 
 **Password**: From your `.env` file (`PIHOLE_UI_PASS`)
 
@@ -418,7 +426,7 @@ For each:
 
 ### 9. WireGuard (Optional)
 
-**URL**: https://wg.moosenas.cc
+**URL**: https://wg.yourdomain.com
 
 **Password**: The plain-text password you used to generate the hash in `.env`
 
@@ -558,7 +566,7 @@ Verify all services can communicate:
 ### "Connection refused" when linking services
 
 - Use container names, not external URLs
-- Example: `http://sonarr:8989` NOT `https://sonarr.moosenas.cc`
+- Example: `http://sonarr:8989` NOT `https://sonarr.yourdomain.com`
 
 ### qBittorrent host should be "gluetun"
 

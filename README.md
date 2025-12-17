@@ -59,15 +59,15 @@ Ask Claude to help deploy the stack - it reads the [`.claude/instructions.md`](.
 
 ### `docker-compose.arr-stack.yml` - Media Stack
 
-**Remote access** (via Cloudflare Tunnel):
+**User-facing services** (local + remote access if configured):
 
-| Service | Description | Local Port | Domain URL |
-|---------|-------------|------------|------------|
-| **Jellyfin** | Media streaming server | 8096 | jellyfin.yourdomain.com |
-| **Jellyseerr** | Media request system | 5055 | jellyseerr.yourdomain.com |
-| **WireGuard** | VPN server for remote access | 51820/udp | wg.yourdomain.com |
+| Service | Description | Local | Remote (if configured) |
+|---------|-------------|-------|------------------------|
+| **Jellyfin** | Media streaming server | NAS_IP:8096 | jellyfin.yourdomain.com |
+| **Jellyseerr** | Media request system | NAS_IP:5055 | jellyseerr.yourdomain.com |
+| **WireGuard** | VPN server for remote access | NAS_IP:51820/udp | wg.yourdomain.com |
 
-**Local-only** (access via NAS_IP:PORT or WireGuard VPN):
+**Admin services** (local-only for security):
 
 | Service | Description | Local Port |
 |---------|-------------|------------|
@@ -80,8 +80,6 @@ Ask Claude to help deploy the stack - it reads the [`.claude/instructions.md`](.
 | **Pi-hole** | DNS + Ad-blocking | 53, 80 |
 | **FlareSolverr** | CAPTCHA solver | 8191 |
 
-> **Why local-only?** These services default to "no login required from local network". Cloudflare Tunnel traffic appears as local, bypassing auth entirely. Use Jellyseerr for remote media requests. For remote admin access, connect via WireGuard first.
->
 > **Don't need all these?** Remove any service by deleting its section from the compose file. Core dependency: Gluetun (VPN gateway).
 >
 > **Prefer Plex?** See `docker-compose.plex-arr-stack.yml` for an untested Plex/Overseerr variant.

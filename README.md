@@ -43,20 +43,24 @@ Ask Claude to help deploy the stack - it reads the [`.claude/instructions.md`](.
 - **Remote access** via WireGuard VPN
 - **Ad-blocking DNS** with Pi-hole
 
-## Stack Architecture
+## Services
 
-| Compose File | Layer | Services |
-|--------------|-------|----------|
-| `docker-compose.traefik.yml` | Infrastructure | Traefik (reverse proxy) |
-| `docker-compose.cloudflared.yml` | External Access | Cloudflared (tunnel) - *Option A only* |
-| `docker-compose.arr-stack.yml` | Media | Gluetun, qBittorrent, Sonarr, Radarr, Prowlarr, Jellyfin, Jellyseerr, Bazarr, FlareSolverr, Pi-hole, WireGuard |
-| `docker-compose.utilities.yml` | Optional | deunhealth, Uptime Kuma, duc |
-
-## Services Included
+### `docker-compose.traefik.yml` - Infrastructure
 
 | Service | Description | Local Port | Domain URL |
 |---------|-------------|------------|------------|
-| **Traefik** | Reverse proxy with automatic SSL | 8080 | traefik.yourdomain.com |
+| **Traefik** | Reverse proxy with automatic SSL | 8080, 8443, 9090 | traefik.yourdomain.com |
+
+### `docker-compose.cloudflared.yml` - External Access *(Option A only)*
+
+| Service | Description | Local Port | Domain URL |
+|---------|-------------|------------|------------|
+| **Cloudflared** | Cloudflare Tunnel for remote access | - | Internal |
+
+### `docker-compose.arr-stack.yml` - Media Stack
+
+| Service | Description | Local Port | Domain URL |
+|---------|-------------|------------|------------|
 | **Gluetun** | VPN gateway for network privacy | - | Internal |
 | **qBittorrent** | BitTorrent client (VueTorrent UI included) | 8085 | qbit.yourdomain.com |
 | **Sonarr** | TV show library management | 8989 | sonarr.yourdomain.com |
@@ -69,13 +73,11 @@ Ask Claude to help deploy the stack - it reads the [`.claude/instructions.md`](.
 | **WireGuard** | VPN server for remote access | 51820/udp | wg.yourdomain.com |
 | **FlareSolverr** | CAPTCHA solver | 8191 | Internal |
 
-> **Don't need all these?** Remove any service by deleting its section from `docker-compose.arr-stack.yml`. Core dependencies: Gluetun (VPN gateway), Traefik (if using external access).
+> **Don't need all these?** Remove any service by deleting its section from the compose file. Core dependency: Gluetun (VPN gateway).
 >
 > **Prefer Plex?** See `docker-compose.plex-arr-stack.yml` for an untested Plex/Overseerr variant.
 
-## Optional Utilities
-
-Deploy with: `docker compose -f docker-compose.utilities.yml up -d`
+### `docker-compose.utilities.yml` - Optional Utilities
 
 | Service | Description | Local Port | Domain URL |
 |---------|-------------|------------|------------|

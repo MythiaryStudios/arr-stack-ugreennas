@@ -45,6 +45,12 @@ services:
       - TZ=${TZ:-Europe/London}
     restart: unless-stopped
     logging: *default-logging
+    healthcheck:
+      test: ["CMD", "/deunhealth", "healthcheck"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   #############################################
   # Monitoring (Uptime Kuma)                 #

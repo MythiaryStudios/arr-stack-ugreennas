@@ -215,26 +215,31 @@ Update `.env` with your provider's required variables.
 ### 2.3 Service Passwords
 
 **Pi-hole Password:**
+
+Invent a password. Or, to generate a random one:
 ```bash
-# Generate random password or choose your own
 openssl rand -base64 24
 ```
 Add to `.env`: `PIHOLE_UI_PASS=your_password`
 
 **WireGuard Password Hash** (for remote VPN access):
+
+Invent a password for the WireGuard admin UI and note it down, then generate its hash:
 ```bash
-docker run --rm ghcr.io/wg-easy/wg-easy wgpw 'YOUR_PASSWORD'
+docker run --rm ghcr.io/wg-easy/wg-easy wgpw 'your_chosen_password'
 ```
-Copy the `$2a$12$...` hash and add to `.env`:
+Copy the `$2a$12$...` hash output and add to `.env`:
 ```bash
 WG_PASSWORD_HASH=$2a$12$your_generated_hash
 ```
 
 **Traefik Dashboard Auth** (if using external access):
+
+Invent a password for the Traefik dashboard and note it down, then generate the auth string:
 ```bash
-docker run --rm httpd:alpine htpasswd -nb admin 'your_password' | sed -e s/\\$/\\$\\$/g
+docker run --rm httpd:alpine htpasswd -nb admin 'your_chosen_password' | sed -e s/\\$/\\$\\$/g
 ```
-Add to `.env`: `TRAEFIK_DASHBOARD_AUTH=admin:$$apr1$$...`
+Add the output to `.env`: `TRAEFIK_DASHBOARD_AUTH=admin:$$apr1$$...`
 
 ### 2.4 Save Your Passwords
 
@@ -251,11 +256,9 @@ Add to `.env`: `TRAEFIK_DASHBOARD_AUTH=admin:$$apr1$$...`
 ## Step 3: External Access (Optional)
 
 <details>
-<summary><strong>Skip this section if you only need local network access</strong></summary>
+<summary><strong>Access services from anywhere (phone, travelling, etc.)</strong></summary>
 
-The stack works perfectly on your home network without any external setup. Use local URLs like `http://NAS_IP:8096` for Jellyfin.
-
-If you want to access services from outside your home (phone on mobile data, travelling), continue with one of the options below.
+For local-only access, skip this section and use URLs like `http://NAS_IP:8096`.
 
 ### Option A: Cloudflare Tunnel (Recommended)
 

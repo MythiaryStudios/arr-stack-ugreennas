@@ -5,12 +5,13 @@ Complete setup guide for the media automation stack. Works on any Docker host wi
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
-- [Step 1: Create Directory Structure](#step-1-create-directory-structure)
+- [Step 1: Clone Repository and Create Directories](#step-1-clone-repository-and-create-directories)
 - [Step 2: Configure Environment](#step-2-configure-environment)
 - [Step 3: External Access (Optional)](#step-3-external-access-optional)
 - [Step 4: Deploy Services](#step-4-deploy-services)
 - [Step 5: Configure Services](#step-5-configure-services)
 - [Step 6: Verify](#step-6-verify)
+- [Updating the Stack](#updating-the-stack)
 - [Troubleshooting](#troubleshooting)
 - [Quick Reference](#quick-reference)
 - [Home Assistant Integration (Optional)](#home-assistant-integration-optional)
@@ -28,6 +29,7 @@ Complete setup guide for the media automation stack. Works on any Docker host wi
 ### Software
 - Docker Engine 20.10+
 - Docker Compose v2.0+
+- Git (for deployment)
 - SSH access to your host
 
 ### Required Services
@@ -41,9 +43,9 @@ Complete setup guide for the media automation stack. Works on any Docker host wi
 
 ---
 
-## Step 1: Create Directory Structure
+## Step 1: Clone Repository and Create Directories
 
-Create the required folders for media and configuration.
+Clone this repository to your Docker host and create media folders.
 
 <details>
 <summary><strong>Ugreen NAS (UGOS)</strong></summary>
@@ -53,12 +55,21 @@ Create the required folders for media and configuration.
 1. Open UGOS web interface → **Files** app
 2. Create shared folders: **Media**, **docker**
 3. Inside **Media**, create subfolders: **downloads**, **tv**, **movies**
-4. Via SSH, create Docker config subdirectories:
+4. Via SSH, install git and clone the repo:
 
 ```bash
 ssh your-username@nas-ip
-sudo mkdir -p /volume1/docker/arr-stack/{gluetun-config,jellyseerr/config,bazarr/config,traefik/dynamic,uptime-kuma}
+
+# Install git (Ugreen NAS uses Debian)
+sudo apt-get update && sudo apt-get install -y git
+
+# Clone the repository
+cd /volume1/docker
+sudo git clone https://github.com/Pharkie/arr-stack-ugreennas.git arr-stack
 sudo chown -R 1000:1000 /volume1/docker/arr-stack
+
+# Create additional config directories
+sudo mkdir -p /volume1/docker/arr-stack/{gluetun-config,jellyseerr/config,bazarr/config,uptime-kuma}
 sudo touch /volume1/docker/arr-stack/traefik/acme.json
 sudo chmod 600 /volume1/docker/arr-stack/traefik/acme.json
 ```
@@ -77,8 +88,17 @@ Use File Station to create:
 Then via SSH:
 ```bash
 ssh your-username@nas-ip
-sudo mkdir -p /volume1/docker/arr-stack/{gluetun-config,jellyseerr/config,bazarr/config,traefik/dynamic,uptime-kuma}
+
+# Install git if not present (Synology)
+sudo synopkg install Git
+
+# Clone the repository
+cd /volume1/docker
+sudo git clone https://github.com/Pharkie/arr-stack-ugreennas.git arr-stack
 sudo chown -R 1000:1000 /volume1/docker/arr-stack
+
+# Create additional config directories
+sudo mkdir -p /volume1/docker/arr-stack/{gluetun-config,jellyseerr/config,bazarr/config,uptime-kuma}
 sudo touch /volume1/docker/arr-stack/traefik/acme.json
 sudo chmod 600 /volume1/docker/arr-stack/traefik/acme.json
 ```
@@ -89,15 +109,20 @@ sudo chmod 600 /volume1/docker/arr-stack/traefik/acme.json
 <summary><strong>Linux Server / Generic</strong></summary>
 
 ```bash
-# Create all directories
-sudo mkdir -p /srv/docker/arr-stack/{gluetun-config,jellyseerr/config,bazarr/config,traefik/dynamic,uptime-kuma}
-sudo mkdir -p /srv/media/{downloads,tv,movies}
+# Install git if needed
+sudo apt-get update && sudo apt-get install -y git
 
-# Set permissions
-sudo chown -R 1000:1000 /srv/docker/arr-stack
+# Create media directories
+sudo mkdir -p /srv/media/{downloads,tv,movies}
 sudo chown -R 1000:1000 /srv/media
 
-# Create Traefik certificate file
+# Clone the repository
+cd /srv/docker
+sudo git clone https://github.com/Pharkie/arr-stack-ugreennas.git arr-stack
+sudo chown -R 1000:1000 /srv/docker/arr-stack
+
+# Create additional config directories
+sudo mkdir -p /srv/docker/arr-stack/{gluetun-config,jellyseerr/config,bazarr/config,uptime-kuma}
 sudo touch /srv/docker/arr-stack/traefik/acme.json
 sudo chmod 600 /srv/docker/arr-stack/traefik/acme.json
 ```
@@ -305,16 +330,7 @@ docker network create \
   traefik-proxy
 ```
 
-### 4.2 Copy Configuration Files
-
-```bash
-# Copy to your server (adjust paths as needed)
-scp traefik/traefik.yml user@host:/volume1/docker/arr-stack/traefik/
-scp traefik/dynamic/tls.yml user@host:/volume1/docker/arr-stack/traefik/dynamic/
-scp traefik/dynamic/vpn-services.yml user@host:/volume1/docker/arr-stack/traefik/dynamic/
-```
-
-### 4.3 Deploy (Order Matters)
+### 4.2 Deploy (Order Matters)
 
 **Local-only deployment:**
 ```bash
@@ -334,7 +350,7 @@ docker compose -f docker-compose.arr-stack.yml up -d
 docker compose -f docker-compose.cloudflared.yml up -d
 ```
 
-### 4.4 Verify Deployment
+### 4.3 Verify Deployment
 
 ```bash
 # Check all containers are running
@@ -460,6 +476,46 @@ docker exec qbittorrent wget -qO- ifconfig.me
 
 ---
 
+## Updating the Stack
+
+Since the stack is deployed via git, updates are straightforward.
+
+### Pull Latest Changes
+
+```bash
+cd /volume1/docker/arr-stack  # or your deployment path
+git pull origin main
+```
+
+### Redeploy Services
+
+After pulling changes, redeploy to apply updates:
+
+```bash
+# Stop services (Docker volumes are preserved - your configs are safe)
+docker compose -f docker-compose.arr-stack.yml down
+docker compose -f docker-compose.cloudflared.yml down
+docker compose -f docker-compose.traefik.yml down
+
+# Start in correct order
+docker compose -f docker-compose.traefik.yml up -d
+docker compose -f docker-compose.cloudflared.yml up -d
+docker compose -f docker-compose.arr-stack.yml up -d
+```
+
+### Update Container Images
+
+To pull the latest Docker images (Sonarr, Radarr, etc.):
+
+```bash
+docker compose -f docker-compose.arr-stack.yml pull
+docker compose -f docker-compose.arr-stack.yml up -d
+```
+
+**Note:** Docker named volumes persist across `down`/`up` cycles. All your service configurations (Sonarr settings, API keys, library data, etc.) are preserved.
+
+---
+
 ## Troubleshooting
 
 ### VPN Connected But Services Have No Internet
@@ -535,7 +591,7 @@ docker logs <container_name> --tail 100
 | Pi-hole | http://HOST_IP/admin | (from PIHOLE_UI_PASS) |
 | Uptime Kuma | http://HOST_IP:3001 | (create during setup) |
 
-### Docker Commands
+### Common Commands
 
 ```bash
 # View all containers
@@ -547,7 +603,12 @@ docker logs -f <container_name>
 # Restart service
 docker compose -f docker-compose.arr-stack.yml restart <service_name>
 
-# Update all services
+# Pull repo updates then redeploy
+git pull origin main
+docker compose -f docker-compose.arr-stack.yml down
+docker compose -f docker-compose.arr-stack.yml up -d
+
+# Update container images
 docker compose -f docker-compose.arr-stack.yml pull
 docker compose -f docker-compose.arr-stack.yml up -d
 

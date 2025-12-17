@@ -96,25 +96,15 @@ Ask Claude to help deploy the stack - it reads [`.claude/instructions.md`](.clau
 | **duc** | Disk usage analyzer (treemap UI) | NAS_IP:8838 | Via WireGuard |
 | **qbit-scheduler** | Pauses torrents overnight (20:00-06:00) for disk spin-down | - | - |
 
-## Compatibility
+## Alternative Providers
 
-> **VPN:** Configured for Surfshark but Gluetun supports 30+ providers (NordVPN, PIA, Mullvad, etc.). See [Gluetun providers](https://github.com/qdm12/gluetun-wiki/tree/main/setup/providers).
->
-> **DNS/SSL:** Configured for Cloudflare (DNS + Tunnel). Other providers work with modifications to Traefik config. See [Traefik ACME docs](https://doc.traefik.io/traefik/https/acme/).
+**VPN:** Configured for Surfshark but Gluetun supports 30+ providers (NordVPN, PIA, Mullvad, etc.). See [Gluetun providers](https://github.com/qdm12/gluetun-wiki/tree/main/setup/providers).
+
+**DNS/SSL:** Configured for Cloudflare (DNS + Tunnel). Other providers work with modifications to Traefik config. See [Traefik ACME docs](https://doc.traefik.io/traefik/https/acme/).
 
 ## Security
 
-**Many services default to NO authentication!** After deployment, enable authentication on:
-
-| Service | Default Auth | Action Required |
-|---------|--------------|-----------------|
-| Bazarr | Disabled | Enable Forms auth, regenerate API key |
-| Sonarr/Radarr/Prowlarr | Disabled for Local | Set to Forms + Enabled |
-| qBittorrent | Bypass localhost | Disable bypass, change default password |
-
-**Cloudflare Tunnel warning**: Tunnel traffic appears as localhost, bypassing "Disabled for Local Addresses" auth.
-
-See [Security Checklist](docs/SETUP.md#59-security-checklist) in Setup Guide for details.
+Admin services (Sonarr, Radarr, etc.) are local-only by design - not exposed via Cloudflare Tunnel. Still recommend enabling auth - see [Security Checklist](docs/SETUP.md#59-security-checklist).
 
 ## License
 

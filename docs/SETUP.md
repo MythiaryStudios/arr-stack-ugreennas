@@ -476,7 +476,6 @@ Double-check you've secured your services (especially if using external access):
 | Sonarr/Radarr/Prowlarr | Authentication: Forms + Required: Enabled |
 | Bazarr | Authentication: Forms enabled |
 | qBittorrent | "Bypass for localhost" disabled, password changed |
-| Uptime Kuma | Admin account created |
 
 ---
 
@@ -555,7 +554,12 @@ docker compose -f docker-compose.arr-stack.yml up -d
 | Prowlarr | http://HOST_IP:9696 | (none by default) |
 | Bazarr | http://HOST_IP:6767 | (none by default) |
 | Pi-hole | http://HOST_IP/admin | (from PIHOLE_UI_PASS) |
+
+**Optional utilities** (if deployed with `docker-compose.utilities.yml`):
+| Service | URL | Default Credentials |
+|---------|-----|---------------------|
 | Uptime Kuma | http://HOST_IP:3001 | (create during setup) |
+| duc | http://HOST_IP:8838 | (none) |
 
 ### Common Commands
 
@@ -603,7 +607,10 @@ docker compose -f docker-compose.arr-stack.yml down
 | .9 | Bazarr |
 | .10 | FlareSolverr |
 | .12 | Cloudflared |
-| .13 | Uptime Kuma |
+| .13 | Uptime Kuma* |
+| .14 | duc* |
+
+*Optional (utilities.yml)
 
 ---
 
@@ -661,7 +668,7 @@ Change `notify.persistent_notification` to `notify.mobile_app_your_phone` for pu
 
 Click **Test** to verify.
 
-### Uptime Kuma → Home Assistant
+### Uptime Kuma → Home Assistant (requires utilities.yml)
 
 In Uptime Kuma: Settings → Notifications → Setup Notification
 - Type: Home Assistant
@@ -677,7 +684,7 @@ In Uptime Kuma: Settings → Notifications → Setup Notification
 Congratulations - you now have a fully automated media server!
 
 1. **Add content:** Search for TV shows in Sonarr, movies in Radarr (that you have rights to)
-2. **Configure Uptime Kuma:** Add monitors for all services
+2. **Optional utilities:** Deploy `docker-compose.utilities.yml` for monitoring (Uptime Kuma) and disk usage (duc)
 3. **Set up backups:** Backup Docker volumes regularly
 4. **Family and friends access:** Create Jellyfin accounts, share Jellyseerr for requests
 

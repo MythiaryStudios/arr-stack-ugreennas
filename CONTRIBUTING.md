@@ -10,6 +10,7 @@ For contributors, forks, and anyone wanting to understand the project internals.
 arr-stack-ugreennas/
 ├── docker-compose.traefik.yml      # Traefik reverse proxy
 ├── docker-compose.arr-stack.yml    # Main media stack (Jellyfin)
+├── docker-compose.utilities.yml    # Optional utilities (monitoring, disk usage)
 ├── docker-compose.plex-arr-stack.yml  # Plex variant (untested)
 ├── docker-compose.cloudflared.yml  # Cloudflare tunnel
 ├── traefik/                        # Traefik configuration
@@ -17,7 +18,8 @@ arr-stack-ugreennas/
 │   └── dynamic/
 │       ├── tls.yml                 # TLS settings
 │       ├── vpn-services.yml        # Service routing (Jellyfin)
-│       └── vpn-services-plex.yml   # Service routing (Plex variant)
+│       ├── vpn-services-plex.yml   # Service routing (Plex variant)
+│       └── utilities.yml           # Utilities routing
 ├── .env.example                    # Environment template
 ├── .env                            # Your configuration (gitignored)
 ├── docs/                           # Documentation
@@ -51,22 +53,24 @@ Internet → Cloudflare Tunnel (or Router Port Forward 80→8080, 443→8443)
                                         (Privacy-protected services)
 ```
 
-### Three-File Architecture
+### Multi-File Architecture
 
-This project uses **three separate Docker Compose files**:
+This project uses **separate Docker Compose files** for each layer:
 
 | File | Layer | Purpose |
 |------|-------|---------|
 | `docker-compose.traefik.yml` | Infrastructure | Reverse proxy, SSL, networking |
+| `docker-compose.cloudflared.yml` | Infrastructure | External access via Cloudflare |
 | `docker-compose.arr-stack.yml` | Application | Media services |
-| `docker-compose.cloudflared.yml` | Tunnel | External access via Cloudflare |
+| `docker-compose.utilities.yml` | Optional | Monitoring, disk usage tools |
 
 **Why separate files?**
 - Independent lifecycle management
 - One Traefik can serve multiple stacks
 - Easier troubleshooting with isolated logs
+- Optional components can be skipped
 
-**Deployment order**: Traefik first (creates network) → cloudflared → arr-stack.
+**Deployment order**: Traefik first (creates network) → cloudflared → arr-stack → utilities (optional).
 
 ### Storage Structure
 

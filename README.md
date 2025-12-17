@@ -36,14 +36,21 @@ Ask Claude to help deploy the stack - it reads the [`.claude/instructions.md`](.
 ## Features
 
 - **VPN-protected networking** via Gluetun + Surfshark for privacy
-- **Auto-recovery** - VPN-dependent services automatically restart when VPN reconnects (via deunhealth)
 - **Automated SSL/TLS** certificates via Traefik + Cloudflare
 - **Media library management** with Sonarr, Radarr, Prowlarr, Bazarr
 - **Media streaming** with Jellyfin (or Plex - see below)
 - **Request management** with Jellyseerr (or Overseerr for Plex)
 - **Remote access** via WireGuard VPN
 - **Ad-blocking DNS** with Pi-hole
-- **Service monitoring** with Uptime Kuma
+
+## Stack Architecture
+
+| Compose File | Layer | Services |
+|--------------|-------|----------|
+| `docker-compose.traefik.yml` | Infrastructure | Traefik (reverse proxy) |
+| `docker-compose.cloudflared.yml` | Infrastructure | Cloudflared (tunnel) |
+| `docker-compose.arr-stack.yml` | Media | Gluetun, qBittorrent, Sonarr, Radarr, Prowlarr, Jellyfin, Jellyseerr, Bazarr, FlareSolverr, Pi-hole, WireGuard |
+| `docker-compose.utilities.yml` | Optional | deunhealth, Uptime Kuma, duc |
 
 ## Services Included
 
@@ -60,13 +67,21 @@ Ask Claude to help deploy the stack - it reads the [`.claude/instructions.md`](.
 | **Jellyseerr** | Media request system | 5055 | jellyseerr.yourdomain.com |
 | **Pi-hole** | DNS + Ad-blocking | 53, 80 | pihole.yourdomain.com |
 | **WireGuard** | VPN server for remote access | 51820/udp | wg.yourdomain.com |
-| **Uptime Kuma** | Service monitoring | 3001 | uptime.yourdomain.com |
 | **FlareSolverr** | CAPTCHA solver | 8191 | Internal |
-| **deunhealth** | Auto-restart on VPN recovery | - | Internal |
 
 > **Don't need all these?** Remove any service by deleting its section from `docker-compose.arr-stack.yml`. Core dependencies: Gluetun (VPN gateway), Traefik (if using external access).
 >
 > **Prefer Plex?** See `docker-compose.plex-arr-stack.yml` for an untested Plex/Overseerr variant.
+
+## Optional Utilities
+
+Deploy with: `docker compose -f docker-compose.utilities.yml up -d`
+
+| Service | Description | Local Port | Domain URL |
+|---------|-------------|------------|------------|
+| **deunhealth** | Auto-restart services when VPN recovers | - | Internal |
+| **Uptime Kuma** | Service monitoring dashboard | 3001 | uptime.yourdomain.com |
+| **duc** | Disk usage analyzer (treemap UI) | 8838 | duc.yourdomain.com |
 
 ## Deployment Options
 
@@ -94,7 +109,6 @@ Skip the domain and access services directly via IP:port. All services work out 
 - `http://NAS_IP:9696` → Prowlarr
 - `http://NAS_IP:8085` → qBittorrent
 - `http://NAS_IP:6767` → Bazarr
-- `http://NAS_IP:3001` → Uptime Kuma
 - `http://NAS_IP:53` → Pi-hole DNS
 
 **What works:** All media automation, VPN-protected downloads, Pi-hole DNS, local streaming
@@ -116,7 +130,6 @@ Skip the domain and access services directly via IP:port. All services work out 
 | Bazarr | Disabled | Enable Forms auth, regenerate API key |
 | Sonarr/Radarr/Prowlarr | Disabled for Local | Set to Forms + Enabled |
 | qBittorrent | Bypass localhost | Disable bypass, change default password |
-| Uptime Kuma | None | Create admin account on first access |
 
 **Cloudflare Tunnel warning**: Tunnel traffic appears as localhost, bypassing "Disabled for Local Addresses" auth.
 

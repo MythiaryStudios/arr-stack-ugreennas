@@ -1,0 +1,27 @@
+# Traefik routing for optional utilities
+# Update domain to match your setup
+
+http:
+  routers:
+    uptime:
+      rule: "Host(`uptime.moosenas.cc`)"
+      entryPoints:
+        - web
+      service: uptime
+
+    duc:
+      rule: "Host(`duc.moosenas.cc`)"
+      entryPoints:
+        - web
+      service: duc
+
+  services:
+    uptime:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.100.13:3001"
+
+    duc:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.100.14:8000"

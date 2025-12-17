@@ -54,13 +54,8 @@ http:
         - web
       service: wg
 
-    uptime:
-      rule: "Host(`uptime.moosenas.cc`)"
-      entryPoints:
-        - web
-      service: uptime
-
     # NOTE: traefik-dashboard is configured via docker-compose.traefik.yml labels
+    # NOTE: uptime-kuma and duc routing moved to utilities.yml
     # (using ${TRAEFIK_DASHBOARD_AUTH} env var for auth - not possible in dynamic configs)
 
   services:
@@ -108,8 +103,3 @@ http:
       loadBalancer:
         servers:
           - url: "http://192.168.100.6:51821"
-
-    uptime:
-      loadBalancer:
-        servers:
-          - url: "http://192.168.100.13:3001"

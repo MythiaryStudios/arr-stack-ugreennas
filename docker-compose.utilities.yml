@@ -1,0 +1,108 @@
+
+#########################
+# Optional NAS Utilities #
+#########################
+# These services are useful but not required for the media stack.
+# Deploy with: docker compose -f docker-compose.utilities.yml up -d
+
+#########################
+# Volumes               #
+#########################
+volumes:
+  duc-index:
+
+#########################
+# Networks              #
+#########################
+networks:
+  traefik-proxy:
+    external: true
+
+#########################
+# Logging               #
+#########################
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+#########################
+# Services              #
+#########################
+services:
+  #############################################
+  # VPN Health Monitor (deunhealth)          #
+  #############################################
+  # Monitors gluetun and restarts dependent containers when VPN recovers.
+  # Works across compose files via Docker socket.
+  deunhealth:
+    image: qmcgaw/deunhealth
+    container_name: deunhealth
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=${TZ:-Europe/London}
+    restart: unless-stopped
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "pgrep", "deunhealth"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+  #############################################
+  # Monitoring (Uptime Kuma)                 #
+  #############################################
+  uptime-kuma:
+    image: louislam/uptime-kuma:2
+    container_name: uptime-kuma
+    restart: unless-stopped
+    ports:
+      - "3001:3001"  # Local network access
+    environment:
+      - TZ=${TZ:-Europe/London}
+    networks:
+      traefik-proxy:
+        ipv4_address: 192.168.100.13
+    volumes:
+      - /volume1/docker/arr-stack/uptime-kuma:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # For Docker container monitoring
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-proxy"
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD-SHELL", "node /app/extra/healthcheck.js"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  #############################################
+  # Disk Usage Analyzer (duc)                #
+  #############################################
+  # Visual disk usage analyzer with treemap UI (like DaisyDisk).
+  # Re-indexes on container restart. Access at http://NAS_IP:8838
+  duc:
+    image: ghcr.io/akeil/docker-duc:latest
+    container_name: duc
+    volumes:
+      - /volume1:/data:ro              # NAS data (read-only)
+      - duc-index:/duc                 # Persistent index
+    ports:
+      - "8838:8000"                    # Web UI
+    environment:
+      - TZ=${TZ:-Europe/London}
+      - DUC_DATABASE=/duc/duc.db
+      - DUC_PATH=/data
+      # Exclude Docker internals and system dirs
+      - DUC_EXCLUDE=.snapshots,@docker,docker
+    networks:
+      traefik-proxy:
+        ipv4_address: 192.168.100.14
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-proxy"
+    restart: unless-stopped
+    logging: *default-logging

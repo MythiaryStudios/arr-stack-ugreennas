@@ -33,12 +33,13 @@ fi
 log "Authenticated successfully"
 
 # Pause or resume all torrents
+# qBittorrent 5.0+ uses 'stop'/'start' instead of 'pause'/'resume'
 if [ "$ACTION" = "pause" ]; then
     log "Pausing all torrents..."
-    ENDPOINT="/api/v2/torrents/pause"
+    ENDPOINT="/api/v2/torrents/stop"
 else
     log "Resuming all torrents..."
-    ENDPOINT="/api/v2/torrents/resume"
+    ENDPOINT="/api/v2/torrents/start"
 fi
 
 HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \

@@ -64,6 +64,8 @@ Ask Claude to help deploy the stack - it reads the [`.claude/instructions.md`](.
 | **FlareSolverr** | CAPTCHA solver | 8191 | Internal |
 | **deunhealth** | Auto-restart on VPN recovery | - | Internal |
 
+> **Don't need all these?** Remove any service by deleting its section from `docker-compose.arr-stack.yml`. Core dependencies: Gluetun (VPN gateway), Traefik (if using external access).
+>
 > **Prefer Plex?** See `docker-compose.plex-arr-stack.yml` for an untested Plex/Overseerr variant.
 
 ## Deployment Options

@@ -393,7 +393,7 @@ docker exec gluetun wget -qO- ifconfig.me
 
 ### 5.1 qBittorrent
 
-1. **Access:** `http://HOST_IP:8085` or `https://qbit.yourdomain.com`
+1. **Access:** `http://HOST_IP:8085`
 2. **Default Login:** `admin` / `adminadmin`
 3. **Immediately change password:** Tools → Options → Web UI
 4. **Create categories:** Right-click categories → Add
@@ -402,7 +402,7 @@ docker exec gluetun wget -qO- ifconfig.me
 
 ### 5.2 Prowlarr (Indexer Manager)
 
-1. **Access:** `http://HOST_IP:9696` or `https://prowlarr.yourdomain.com`
+1. **Access:** `http://HOST_IP:9696`
 2. **Add Indexers:** Settings → Indexers → Add Indexer
 3. **Add FlareSolverr** (for protected sites):
    - Settings → Indexers → Add FlareSolverr
@@ -417,7 +417,7 @@ docker exec gluetun wget -qO- ifconfig.me
 
 ### 5.3 Sonarr (TV Shows)
 
-1. **Access:** `http://HOST_IP:8989` or `https://sonarr.yourdomain.com`
+1. **Access:** `http://HOST_IP:8989`
 2. **Add Root Folder:** Settings → Media Management → `/tv`
 3. **Add Download Client:** Settings → Download Clients → qBittorrent
    - Host: `gluetun` (important - not localhost!)
@@ -426,7 +426,7 @@ docker exec gluetun wget -qO- ifconfig.me
 
 ### 5.4 Radarr (Movies)
 
-1. **Access:** `http://HOST_IP:7878` or `https://radarr.yourdomain.com`
+1. **Access:** `http://HOST_IP:7878`
 2. **Add Root Folder:** Settings → Media Management → `/movies`
 3. **Add Download Client:** Settings → Download Clients → qBittorrent
    - Host: `gluetun`
@@ -453,7 +453,7 @@ docker exec gluetun wget -qO- ifconfig.me
 
 ### 5.7 Bazarr (Subtitles)
 
-1. **Access:** `http://HOST_IP:6767` or `https://bazarr.yourdomain.com`
+1. **Access:** `http://HOST_IP:6767`
 2. **Enable Authentication:** Settings → General → Security → Forms
 3. **Connect to Sonarr:** Settings → Sonarr → `http://sonarr:8989`
 4. **Connect to Radarr:** Settings → Radarr → `http://radarr:7878`
@@ -461,7 +461,7 @@ docker exec gluetun wget -qO- ifconfig.me
 
 ### 5.8 Pi-hole (DNS/Ad-blocking)
 
-1. **Access:** `http://HOST_IP/admin` or `https://pihole.yourdomain.com/admin`
+1. **Access:** `http://HOST_IP/admin`
 2. **Login:** Use password from `PIHOLE_UI_PASS`
 3. **Configure DNS:** Settings → DNS → Upstream: 1.1.1.1, 1.0.0.1
 

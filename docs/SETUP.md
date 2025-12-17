@@ -171,12 +171,12 @@ Gluetun supports 30+ VPN providers. Configuration varies by provider.
 
 | Step | Screenshot |
 |------|------------|
-| 1. Go to [my.surfshark.com](https://my.surfshark.com/) → VPN → Manual Setup → Router → WireGuard | <img src="images/Surfshark/1.png" width="300"> |
-| 2. Select **"I don't have a key pair"** | <img src="images/Surfshark/2.png" width="300"> |
-| 3. Under Credentials, enter a name (e.g., `ugreen-nas`) | <img src="images/Surfshark/3.png" width="300"> |
-| 4. Click **"Generate a new key pair"** and copy both keys to your notes | <img src="images/Surfshark/4.png" width="300"> |
-| 5. Click **"Choose location"** and select a server (e.g., United Kingdom) | <img src="images/Surfshark/5.png" width="300"> |
-| 6. Click the **Download** arrow to get the `.conf` file | <img src="images/Surfshark/6.png" width="300"> |
+| 1. Go to [my.surfshark.com](https://my.surfshark.com/) → VPN → Manual Setup → Router → WireGuard | <img src="images/Surfshark/1.png" width="500"> |
+| 2. Select **"I don't have a key pair"** | <img src="images/Surfshark/2.png" width="500"> |
+| 3. Under Credentials, enter a name (e.g., `ugreen-nas`) | <img src="images/Surfshark/3.png" width="500"> |
+| 4. Click **"Generate a new key pair"** and copy both keys to your notes | <img src="images/Surfshark/4.png" width="500"> |
+| 5. Click **"Choose location"** and select a server (e.g., United Kingdom) | <img src="images/Surfshark/5.png" width="500"> |
+| 6. Click the **Download** arrow to get the `.conf` file | <img src="images/Surfshark/6.png" width="500"> |
 
 7. Open the downloaded `.conf` file and note the `Address` value:
    ```ini

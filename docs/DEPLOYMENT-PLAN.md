@@ -86,11 +86,29 @@ sudo systemctl restart nginx
 ### 1.1 Create Directory Structure on NAS
 **Status**: ⏳ Pending
 
+#### GUI vs SSH: Which to Use?
+
+**Important:** Folders created via SSH don't appear in the UGOS Files app.
+
+**Option A: Create via UGOS GUI** (if you want folders visible in Files app)
+1. Open UGOS web interface → Files app
+2. Create: **Media** (shared folder), then subfolders: **downloads**, **tv**, **movies**
+3. Create: **docker** (shared folder)
+4. Then via SSH, only create Docker config subdirectories:
+   ```bash
+   ssh your-username@ugreen-nas-ip
+   sudo mkdir -p /volume1/docker/arr-stack/{gluetun-config,jellyseerr/config,bazarr/config,traefik/dynamic}
+   sudo chown -R 1000:1000 /volume1/docker/arr-stack
+   sudo touch /volume1/docker/arr-stack/traefik/acme.json
+   sudo chmod 600 /volume1/docker/arr-stack/traefik/acme.json
+   ```
+
+**Option B: Create via SSH only** (if you don't need UGOS Files visibility)
 ```bash
 # SSH into Ugreen NAS
 ssh your-username@ugreen-nas-ip
 
-# Create directory structure
+# Create all directories
 sudo mkdir -p /volume1/docker/arr-stack/{gluetun-config,jellyseerr/config,bazarr/config,traefik/dynamic}
 sudo mkdir -p /volume1/Media/{downloads,tv,movies}
 
@@ -135,11 +153,14 @@ cp .env.example .env
 1. Go to: https://my.surfshark.com/
 2. Navigate: VPN → Manual Setup → Router → WireGuard
 3. Select "I don't have a key pair" to generate new keys
-4. Click **"Download"** to get the full WireGuard configuration file (`.conf`)
-5. Open the downloaded file and extract:
+4. **Select a server location** (e.g., "United Kingdom - London" or "USA - New York")
+   - You MUST select a location before the Download button appears
+   - Choose based on your priority: closest = fastest speeds, or specific country for region-locked content
+5. Click **"Download"** to get the full WireGuard configuration file (`.conf`)
+6. Open the downloaded file and extract:
    - **PrivateKey** (from [Interface] section)
    - **Address** (from [Interface] section, e.g., 10.14.0.2/16)
-6. Add to `.env`:
+7. Add to `.env`:
    ```
    SURFSHARK_PRIVATE_KEY=your_private_key_here
    SURFSHARK_WG_ADDRESS=10.14.0.2/16

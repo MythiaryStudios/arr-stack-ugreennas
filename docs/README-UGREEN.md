@@ -252,11 +252,42 @@ nano .env
 
 ### 3. Create Directory Structure on NAS
 
+#### Important: GUI vs SSH Folder Creation
+
+**Why does this matter?** Folders created via SSH don't automatically appear in the UGOS Files app. Folders created via the UGOS GUI are registered as "Shared Folders" with proper permissions and visibility.
+
+#### Option A: Create All Folders via UGOS GUI (Recommended)
+
+If you want all your media folders visible in the UGOS Files app:
+
+1. Open UGOS web interface (http://your-nas-ip:8080)
+2. Open the **Files** app
+3. Create the folder structure:
+   - **Media** (shared folder)
+     - **downloads** (subfolder inside Media)
+     - **tv** (subfolder inside Media)
+     - **movies** (subfolder inside Media)
+   - **docker** (shared folder)
+
+Then via SSH, create only the Docker config subdirectories:
+
+```bash
+ssh user@nas-ip
+sudo mkdir -p /volume1/docker/arr-stack/{gluetun-config,jellyseerr/config,bazarr/config,traefik/dynamic}
+sudo chown -R 1000:1000 /volume1/docker/arr-stack
+sudo touch /volume1/docker/arr-stack/traefik/acme.json
+sudo chmod 600 /volume1/docker/arr-stack/traefik/acme.json
+```
+
+#### Option B: Create via SSH Only
+
+If you don't need folders visible in UGOS Files app:
+
 ```bash
 # SSH to NAS
 ssh user@nas-ip
 
-# Create directories
+# Create all directories
 sudo mkdir -p /volume1/docker/arr-stack/{gluetun-config,jellyseerr/config,bazarr/config,traefik/dynamic}
 sudo mkdir -p /volume1/Media/{downloads,tv,movies}
 
@@ -427,8 +458,14 @@ Your `.env` already has:
 3. Select device type: **Router**
 4. Select protocol: **WireGuard**
 5. When asked "Do you have a WireGuard key pair?", select **"I don't"**
-6. Surfshark will generate keys - click **"Download"** to get the `.conf` file
-7. **Open the downloaded file** and extract these values:
+6. Surfshark will generate your key pair
+7. **Select a server location** (e.g., "United Kingdom - London" or "USA - New York")
+   - You MUST select a location before the Download button appears
+   - **Choose based on your priority:**
+     - Closest location = fastest speeds
+     - Specific country = access region-locked content (UK for BBC iPlayer, US for US-only services)
+8. Click **"Download"** to get the `.conf` file
+9. **Open the downloaded file** and extract these values:
 
    ```ini
    [Interface]
@@ -436,7 +473,7 @@ Your `.env` already has:
    PrivateKey = uHSC4GWQ...        ← Copy this
    ```
 
-8. **Add** to `.env`:
+10. **Add** to `.env`:
    ```bash
    SURFSHARK_PRIVATE_KEY=your_private_key_here
    SURFSHARK_WG_ADDRESS=10.14.0.2/16

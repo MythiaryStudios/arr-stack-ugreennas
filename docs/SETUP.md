@@ -12,7 +12,6 @@ Complete setup guide for the media automation stack. Works on any Docker host wi
 - [Step 5: Configure Services](#step-5-configure-services)
 - [Step 6: Verify](#step-6-verify)
 - [Updating the Stack](#updating-the-stack)
-- [Troubleshooting](#troubleshooting)
 - [Quick Reference](#quick-reference)
 - [Home Assistant Integration (Optional)](#home-assistant-integration-optional)
 
@@ -542,65 +541,6 @@ docker compose -f docker-compose.arr-stack.yml up -d
 
 ---
 
-## Troubleshooting
-
-### VPN Connected But Services Have No Internet
-
-**Symptoms:** Gluetun shows "Connected" but qBittorrent/Sonarr can't reach internet.
-
-**Solutions:**
-1. Check firewall subnets in gluetun config:
-   ```yaml
-   FIREWALL_OUTBOUND_SUBNETS=192.168.0.0/24,192.168.100.0/24,10.8.1.0/24
-   ```
-2. Restart gluetun: `docker compose restart gluetun`
-3. Check DNS: Add `DOT=off` to gluetun environment if DNS issues persist
-
-### Downloads Complete But Don't Move to Library
-
-**Symptoms:** Download finishes in qBittorrent but Sonarr/Radarr doesn't import it.
-
-**Solutions:**
-1. Check category matches in qBittorrent and Sonarr/Radarr
-2. Verify path mapping - download client host should be `gluetun` not `localhost`
-3. Check permissions: `sudo chown -R 1000:1000 /path/to/downloads`
-4. Check Sonarr/Radarr Activity tab for import errors
-
-### Container Restart Loop
-
-**Symptoms:** Container keeps restarting, `docker ps` shows "Restarting"
-
-**Solutions:**
-```bash
-# Check logs for error
-docker logs <container_name> --tail 100
-
-# Common causes:
-# - Missing environment variables in .env
-# - Permission errors on volumes
-# - Port conflicts
-```
-
-### SSL Certificates Not Generating (External Access)
-
-**Symptoms:** Browser shows "certificate invalid" after Traefik deployment
-
-**Solutions:**
-1. Verify Cloudflare proxy is **disabled** (gray cloud, not orange)
-2. Check API token permissions: Zone:DNS:Edit AND Zone:Zone:Read
-3. Check acme.json permissions: `chmod 600 traefik/acme.json`
-4. View Traefik logs: `docker logs traefik | grep -i certificate`
-
-### Services Accessible Without Login (Security Issue)
-
-**Symptoms:** Can access Bazarr/Sonarr/etc. without authentication
-
-**Cause:** Default settings or "Disabled for Local Addresses" with Cloudflare Tunnel (tunnel traffic appears as localhost).
-
-**Solution:** Set all services to "Authentication: Forms" and "Required: Enabled" (not "Disabled for Local Addresses").
-
----
-
 ## Quick Reference
 
 ### Local Access URLs
@@ -734,14 +674,11 @@ In Uptime Kuma: Settings → Notifications → Setup Notification
 
 ## Next Steps
 
-1. **Add content:** Search for TV shows in Sonarr, movies in Radarr
+Congratulations - you now have a fully automated media server!
+
+1. **Add content:** Search for TV shows in Sonarr, movies in Radarr (that you have rights to)
 2. **Configure Uptime Kuma:** Add monitors for all services
 3. **Set up backups:** Backup Docker volumes regularly
-4. **Family access:** Create Jellyfin accounts, share Jellyseerr for requests
+4. **Family and friends access:** Create Jellyfin accounts, share Jellyseerr for requests
 
----
-
-**Need help?** Check the [GitHub Issues](https://github.com/Pharkie/arr-stack-ugreennas/issues) or community resources:
-- [Servarr Wiki](https://wiki.servarr.com/) (Sonarr/Radarr/Prowlarr)
-- [Gluetun Wiki](https://github.com/qdm12/gluetun-wiki)
-- [r/selfhosted](https://reddit.com/r/selfhosted)
+Have fun! If you run into issues, [raise an issue on GitHub](https://github.com/Pharkie/arr-stack-ugreennas/issues).

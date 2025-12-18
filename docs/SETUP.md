@@ -396,6 +396,18 @@ docker exec gluetun wget -qO- ifconfig.me
    docker logs qbittorrent 2>&1 | grep "temporary password"
    ```
    Look for: `A temporary password is provided for this session: <password>`
+
+   <details>
+   <summary><strong>Ugreen NAS:</strong> Using UGOS Docker GUI instead</summary>
+
+   You can also find the password in the UGOS web interface:
+   1. Open Docker → Container → qbittorrent → Log tab
+   2. Search for "password"
+
+   ![UGOS Docker logs](images/qbit/1.png)
+
+   </details>
+
 3. **Login:** Username `admin`, password from step 2
 4. **Change password immediately:** Tools → Options → Web UI → Authentication
 5. **Create categories:** Right-click categories → Add

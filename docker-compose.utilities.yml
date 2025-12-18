@@ -93,7 +93,7 @@ services:
     image: mkoestler/duc-service:latest
     container_name: duc
     volumes:
-      - /volume1:/scan/volume1:ro      # NAS data (read-only)
+      - /volume2:/scan/volume2:ro      # NAS data (read-only)
       - duc-index:/database            # Persistent index
     ports:
       - "8838:80"                      # Local network access only

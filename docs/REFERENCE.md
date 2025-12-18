@@ -23,6 +23,8 @@
 ## Common Commands
 
 ```bash
+# All commands below run on your NAS via SSH
+
 # View all containers
 docker ps
 

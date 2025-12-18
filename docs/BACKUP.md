@@ -41,6 +41,7 @@ Large volumes that regenerate automatically are excluded:
 ### On the NAS
 
 ```bash
+# SSH into your NAS first, then:
 cd /volume1/docker/arr-stack
 ./scripts/backup-volumes.sh --tar
 ```
@@ -81,7 +82,7 @@ scp user@nas:/tmp/arr-stack-backup-*.tar.gz ./backup.tar.gz
 ### Full Restore (New Installation)
 
 1. Deploy the stack normally (see [Setup Guide](SETUP.md))
-2. Stop the services:
+2. SSH into your NAS and stop the services:
    ```bash
    docker compose -f docker-compose.arr-stack.yml down
    ```
@@ -107,7 +108,7 @@ scp user@nas:/tmp/arr-stack-backup-*.tar.gz ./backup.tar.gz
 ### Single Volume Restore
 
 ```bash
-# Example: restore jellyseerr config
+# On NAS via SSH - example: restore jellyseerr config
 docker compose -f docker-compose.arr-stack.yml stop jellyseerr
 
 docker run --rm \

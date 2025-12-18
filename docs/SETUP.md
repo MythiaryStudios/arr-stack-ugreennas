@@ -132,6 +132,8 @@ sudo chmod 600 /srv/docker/arr-stack/traefik/acme.json
 
 </details>
 
+> **Note:** From this point forward, all commands should be run **on your NAS via SSH** unless otherwise noted. If you closed your terminal, reconnect with `ssh your-username@nas-ip` and `cd` to your deployment directory.
+
 ### Expected Structure
 
 ```

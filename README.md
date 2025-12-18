@@ -1,6 +1,10 @@
 # Media Automation Stack for Ugreen NAS
 
+![GitHub release](https://img.shields.io/github/v/release/Pharkie/arr-stack-ugreennas)
+
 A complete, production-ready Docker Compose stack for automated media management with VPN routing, SSL certificates, and remote access.
+
+If this project helped you, consider giving it a ⭐
 
 **Tested on Ugreen NAS DXP4800+** but should work on any Docker host (Synology, QNAP, Linux server, etc.).
 
@@ -127,3 +131,7 @@ Documentation, configuration files, and examples in this repository are licensed
 ## Acknowledgments
 
 Forked from [TheRealCodeVoyage/arr-stack-setup-with-pihole](https://github.com/TheRealCodeVoyage/arr-stack-setup-with-pihole). Thanks to [@benjamin-awd](https://github.com/benjamin-awd) for VPN config improvements.
+
+---
+
+If this project helped you, consider giving it a ⭐
